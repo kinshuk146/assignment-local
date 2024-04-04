@@ -26,7 +26,6 @@ app.post('/users',async (req,res)=>{
         res.status(400).send('Enter a correct Email Address')
         return
     }
-    if(req.body.age)
     
     ch2.sendToQueue(queue, Buffer.from(JSON.stringify(req.body)));
     res.status(200).send('Success');
