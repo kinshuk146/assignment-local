@@ -1,0 +1,49 @@
+version: "3.8"
+
+
+networks:
+  my_network:
+    name: my_network
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - my_network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - my_network
+
+  node:
+    build: ./node
+    container_name: node
+    ports:
+      - 3000:3000
+    depends_on:
+      - rabbitmq
+    networks:
+      - my_network
+  
+  python:
+    build: ./python
+    container_name: python
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - my_network
+
+volumes:
+  mongodb_data:
